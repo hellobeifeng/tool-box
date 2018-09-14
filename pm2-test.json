@@ -1,0 +1,9 @@
+{
+  "apps": [
+      {
+          "name": "tool-box-test",
+          "script": "npm",
+          "args" : "run server-test"
+      }
+  ]
+}

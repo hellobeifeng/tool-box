@@ -1,0 +1,9 @@
+{
+  "apps": [
+      {
+          "name": "tool-box-release",
+          "script": "npm",
+          "args" : "run server-release"
+      }
+  ]
+}
