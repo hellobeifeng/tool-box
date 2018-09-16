@@ -2,16 +2,20 @@
 <div class="acontainer">
   <p>下面是组件列表d</p>
   <div>
-    <p>1.弹窗组件</p>
-    <notify :content="'我是弹窗组件'"></notify>
+    <span>1.弹窗组件</span>
+    <button @click="call_notify">点我弹窗</button>
   </div>
 </div>
 </template>
 <script>
-import notify from 'comp/notification/notification.vue'
 export default {
-  components: {
-    notify
+  methods: {
+    call_notify () {
+      this.$notify({
+        content: 'test $notify',
+        btn: 'close'
+      })
+    }
   }
 }
 </script>
