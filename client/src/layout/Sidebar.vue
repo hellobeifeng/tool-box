@@ -29,6 +29,17 @@
           name: '首页',
           link: '/',
           icon: 'el-icon-menu'
+        },
+        {
+          index: '2',
+          name: 'Vue 相关',
+          link: '/vue/components',
+          icon: 'el-icon-edit-outline',
+          subs: [{
+            index: '2-1',
+            name: 'Vue 组件',
+            link: '/vue/components'
+          }]
         }]
       }
     },
