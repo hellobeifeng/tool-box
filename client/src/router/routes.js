@@ -2,6 +2,7 @@
 import Home from '../layout/Home.vue'
 import Readme from '../layout/MainPage.vue'
 import ComponentsList from '../views/aboutVue/componentsList.vue'
+import ApiList from '../views/aboutVue/apiList.vue'
 
 export default [
   {
@@ -36,6 +37,10 @@ export default [
       {
         path: 'components',
         component: ComponentsList
+      },
+      {
+        path: 'api',
+        component: ApiList
       }
     ]
   }

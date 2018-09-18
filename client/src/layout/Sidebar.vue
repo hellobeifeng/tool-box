@@ -39,6 +39,10 @@
             index: '2-1',
             name: 'Vue 组件',
             link: '/vue/components'
+          }, {
+            index: '2-2',
+            name: 'Vue Api',
+            link: '/vue/api'
           }]
         }]
       }
