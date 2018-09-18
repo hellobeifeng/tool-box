@@ -5,9 +5,14 @@
     <span>1.弹窗组件</span>
     <button @click="call_notify">点我弹窗</button>
   </div>
+  <div>
+    <span>1.视频上传模块</span>
+    <video-upload></video-upload>
+  </div>
 </div>
 </template>
 <script>
+import VideoUpload from 'comp/VideoUploader/index.vue'
 export default {
   methods: {
     call_notify () {
@@ -16,6 +21,9 @@ export default {
         btn: 'close'
       })
     }
+  },
+  components: {
+    VideoUpload
   }
 }
 </script>
