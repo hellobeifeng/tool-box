@@ -18,11 +18,13 @@ export default {
   mounted () {
     console.log(VideoUpload)
     var input = document.getElementById('videofile')
-    var upload
+    var upload = null
 
     input.addEventListener('change', function () {
       var blob = this.files[0]
-      upload = new VideoUpload(blob)
+      upload = new VideoUpload(blob, {
+        mode: 1
+      })
 
       upload.on('ready', function (msg) {
         console.log('监听到事件 ready= ', msg)
@@ -48,18 +50,6 @@ export default {
       upload.cancel()
       // 客户端指控其他页面状态
     })
-  },
-  watch: {
-  },
-  methods: {
-    upload (file) {
-      let param = new FormData() // eslint-disable-line
-      param.append('files', file, file.name)
-      let config = {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      }
-      return this.axios.post('/adfe/avm/upload', param, config).then(res => res.data)
-    }
   }
 }
 </script>

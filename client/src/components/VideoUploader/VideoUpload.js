@@ -22,9 +22,9 @@ function VideoUpload (file, option) {
     fileSizeLimit: 500 * 1024 * 1024, // 默认上传视频大小限制为 500 M
     durationLimit: 30 * 60, // 默认播放时长限制为 30 分钟
     bytesPerPiece: 10 * 1024 * 1024, // 默认视频每片的切片大小为 10M
-    advertisingMode: ['native_video'] // 广告投放形式  1 原生视频  2  贴片广告  3 原生视频+ 贴片广告
+    mode: [0] // 是否需要严格校验  0 不需要  1  需要
   }
-  this.option = Object.assign(defaultOption, option)
+  this.option = Object.assign(defaultOption, option) // 用传入的配置覆盖默认的参数
 }
 
 VideoUpload.prototype.init = function () {
@@ -78,9 +78,9 @@ VideoUpload.prototype.cancel = function () {
   console.log('## after cancle this: ', JSON.stringify(this))
 }
 
-// checkFileByType
+// checkFileByType 根据入参 mode 类型判断检查类型
 function checkFileByType (upload) {
-  if (upload.option.advertisingMode.indexOf('roll') !== -1) {
+  if (upload.option.mode.indexOf(1) !== -1) {
     // 包含原生视频，严格校验，校验分辨率和宽高比
     return checkFileValidRoll(upload)
   } else {
