@@ -4,15 +4,23 @@
   <div>
     <span>1.弹窗组件</span>
     <button @click="call_notify">点我弹窗</button>
+    <hr>
   </div>
   <div>
-    <span>1.视频上传模块</span>
+    <span>2.视频上传模块</span>
     <video-upload></video-upload>
+    <hr>
+  </div>
+  <div>
+    <span>3.JSON 比对模块</span>
+    <json-diff></json-diff>
+    <hr>
   </div>
 </div>
 </template>
 <script>
 import VideoUpload from 'comp/VideoUploader/index.vue'
+import JsonDiff from 'comp/JsonDiff/index.vue'
 export default {
   methods: {
     call_notify () {
@@ -23,7 +31,8 @@ export default {
     }
   },
   components: {
-    VideoUpload
+    VideoUpload,
+    JsonDiff
   }
 }
 </script>
