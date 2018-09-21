@@ -105,7 +105,80 @@ code 枚举值如下
 | A00001 | 视频校验失败 |
 | A00002 | 网络错误 |
 
-## 三、TODO
+## 三 爬坑知识点
+本文涉及到接口调用的地方，都使用的 settimeout 来模拟异步操作，但是有几个比较关键的知识点，我列举一下
+
+### onloadmetadata
+
+    video.preload = 'metadata'
+    video.onloadedmetadata = function (e) {}
+
+这个方法目前只对 mp4 封装格式 和 mkv 封装格式起作用
+
+### 分片上传
+
+分片之后，要将分片上传到服务器，这里还是有点说道的。
+我的项目，这个过程要经历 前端 - nodejs 中间层 - 后端接口的流程，所以前端和中间层要做好处理，然后再丢给后端
+
+#### 前端
+
+前端要构建一个 `FromData()`对象，设置好传输格式，然后将对象通过 post 请求扔到中间层
+
+主要代码如下
+
+    let param = new FormData()
+    param.append('files', chunk)
+    param.append('file_id', id)
+    param.append('range', range)
+    param.append('spot_url', url)
+    param.append('uid', uid)
+
+    let config = {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }
+
+    axios.post('/adfe/avm/splitUpload', param, config)
+      .then(function (res) {
+
+
+#### 中间层
+这个中检测个，我使用的 nodejs express 中间层
+
+- router
+
+    .post('/adfe/avm/splitUpload', middleware('videoUpload'), handlers('splitUpload'))
+
+- middle/videoUpload
+
+    var multipart = require('connect-multiparty');
+    var multipartMiddleware = multipart();
+
+    module.exports = multipartMiddleware
+
+- handlers/splitUpload
+
+    const fs = require('fs')
+    const FormData = require('form-data')
+    const path = require('path')
+
+    let params = new FormData()
+    params.append('file', fs.createReadStream((path.resolve(req.files.files.path))))
+    params.append('file_id', req.body.file_id)
+    params.append('range', req.body.range)
+
+    params.submit(url, function (err, res) {
+      if (err) {
+        log.info('splitUpload params submit url error', err)
+        res.status(500).send('splitUpload params submit url error')
+      }
+      let body = ''
+      res.on('data', chunk => {
+        body += chunk
+      }).on('end', () => {
+        // 业务逻辑
+      })
+
+## 四、TODO
 - 使用各类设计模式改造代码：单例、工厂、策略、装饰器等
 - 对分片增加 md5 值
 - 客户端断点重试

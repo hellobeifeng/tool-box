@@ -282,11 +282,23 @@ function SplitUploadRequetAll (upload) {
   }
   return new Promise(function (resolve, reject) {
     upload.uploadingStatus.startUploadingTime = new Date().getTime() // 初始化开始上传时间
-    Promise.all(promiseArr)
+    // Promise.all(promiseArr)
+    //   .then(function (result) {
+    //     resolve()
+    //   })
+    //   .catch(function (data) {
+    //     reject(data)
+    //   })
+
+    mapLimit(promiseArr, 10, function (item) {
+      return Promise.resolve(item)
+    })
       .then(function (result) {
+        console.log('## result', result)
         resolve()
       })
       .catch(function (data) {
+        console.log('## catch err after splitUpload all: ', data)
         reject(data)
       })
   })
@@ -351,6 +363,23 @@ function splitUploadFinish (upload) {
       resolve()
     }, 2000)
   })
+}
+
+let mapLimit = (list, limit, asyncHandle) => {
+  let recursion = (arr) => {
+    return asyncHandle(arr.shift())
+      .then(() => {
+        if (arr.length !== 0) return recursion(arr)
+        else return 'finish'
+      })
+  }
+
+  let listCopy = [].concat(list)
+  let asyncList = [] // 正在进行的所有并发异步操作
+  while (limit--) {
+    asyncList.push(recursion(listCopy))
+  }
+  return Promise.all(asyncList) // 所有并发异步操作都完成后，本次并发控制迭代完成
 }
 
 function tryByRandom (targetNum) {
