@@ -2,23 +2,30 @@
 // let videoUpload = new VideoUpload(file) // 触发上传
 // videoUpload.on('ready',data => {}) // 开始上传，格式校验通过等
 // videoUpload.on('uploading',data => {}) // 上传中，回调第一个参数为上传进度，值为整数（0 - 100）
-// videoUpload.on('success',data => {}) // 上传成功，回调第一个参数为视频的奇传ID
+// videoUpload.on('success',data => {}) // 上传成功，回调第一个参数为视频的服务器生成文件ID
 // videoUpload.on('error',error => {}) // 上传失败，回调第一个参数为失败原因
 // videoUpload.cancel() // 取消视频上传
 
-// videoupload 文件
+// videoupload 文件上传对象
 function VideoUpload (file, option) {
-  this.eventList = {} // 待注册的事件仓库
-  this.fileMeta = { // 保存模块中的文件属性信息
-    file: file // new 对象时候传入的文件流对象
+  // 待注册的事件仓库
+  this.eventList = {}
+  // 保存模块中的文件属性信息
+  this.fileMeta = {
+    file: file, // new 对象时候传入的文件流对象
+    fileSize: 0, // 上传文件体积
+    filename: '', // 上传文件名字
+    fileType: '' // 上传文件类型
   }
-  this.uploadingStatus = { // 保存上传状态
+  // 保存文件传输的动态状态
+  this.uploadingStatus = {
     hadUpload: 0, // 已上传的文件大小
     startUploadingTime: 0, // 第一次开始上传的时间，用于计算带宽
     estimatespeed: 0, // 预估带宽，单位：( 字节数 / 毫秒)
     hadArrived: false // 是否有某次的切片传输成功返回过
   }
-  var defaultOption = { // 模块的配置信息，实例化的时候传入，不传则使用默认配置
+  // 模块的配置信息，实例化的时候传入，不传则使用默认配置
+  var defaultOption = {
     fileSizeLimit: 500 * 1024 * 1024, // 默认上传视频大小限制为 500 M
     durationLimit: 30 * 60, // 默认播放时长限制为 30 分钟
     bytesPerPiece: 10 * 1024 * 1024, // 默认视频每片的切片大小为 10M
@@ -82,15 +89,14 @@ VideoUpload.prototype.cancel = function () {
 function checkFileByType (upload) {
   if (upload.option.mode.indexOf(1) !== -1) {
     // 包含原生视频，严格校验，校验分辨率和宽高比
-    return checkFileValidRoll(upload)
+    return checkFileStrict(upload)
   } else {
-    // 不包含checkFileValid原生视频，只处理时长
-    return checkFileValidOther(upload)
+    // 只校验视频大小
+    return checkFileNotStrict(upload)
   }
 }
 
-// 检查文件是否符合要求
-function checkFileValidOther (upload) {
+function checkFileNotStrict (upload) {
   return new Promise(function (resolve, reject) {
     var blob = upload.fileMeta.file
     var option = upload.option
@@ -111,14 +117,14 @@ function checkFileValidOther (upload) {
   })
 }
 
-function checkFileValidRoll (upload) {
+function checkFileStrict (upload) {
   return new Promise(function (resolve, reject) {
     window.URL = window.URL || window.webkitURL
     var video = document.createElement('video')
-
     var blob = upload.fileMeta.file
     var option = upload.option
     var fileType = getFileTypeByName(blob.name)
+
     if (fileType === 'mp4') {
       video.preload = 'metadata'
       video.onloadedmetadata = function (e) {
@@ -206,10 +212,9 @@ function fileMetaValid (meta, option) {
   return result
 }
 
-// 校验文件大小和文件播放时长，是否符合要求
+// 校验文件大小是否符合要求
 function fileLengthIsValid (fileSize, option) {
   fileSize = fileSize || Infinity
-  // duration = duration || 0
   var result = ''
 
   if (fileSize > option.fileSizeLimit) {
@@ -228,9 +233,9 @@ function StartSplitUploadRequest (upload) {
     setTimeout(function () {
       if (tryByRandom(10)) {
         var result = {
-          'file_id': 'ca75876b38364bc493869a87ae145ff6'// 文件id
+          'file_id': 'file20180911_md512345'// 文件id
         }
-        upload.fileMeta = Object.assign(upload.fileMeta, result) // 文件奇传id
+        upload.fileMeta = Object.assign(upload.fileMeta, result) // 文件id
         upload.trigger('ready', {
           filename: upload.fileMeta.filename,
           size: upload.fileMeta.fileSize,
@@ -243,7 +248,7 @@ function StartSplitUploadRequest (upload) {
       } else {
         reject({
           code: 'A00002',
-          msg: '奇传开始上传接口请求异常'
+          msg: '接口请求异常'
         })
       }
     })
@@ -253,35 +258,29 @@ function StartSplitUploadRequest (upload) {
 // 并发调用分片上传接口
 function SplitUploadRequetAll (upload) {
   // 对 file 文件流进行分片
-  var fileMeta = upload.fileMeta
-  var file = fileMeta.file
-  var filesize = fileMeta.fileSize
-  var bytesPerPiece = upload.option.bytesPerPiece
-  console.log('## 每一片的大小： ', bytesPerPiece)
+  let { file, fileSize } = upload.fileMeta
+  let bytesPerPiece = upload.option.bytesPerPiece
+
   // 分片时的内部属性
   var start = 0
   var end
   var index = 0
-  var totalPieces = Math.ceil(filesize / bytesPerPiece)
+  var totalPieces = Math.ceil(fileSize / bytesPerPiece)
   var promiseArr = []
-
-  while (start < filesize) {
+  console.log('## file file', file, fileSize)
+  while (start < fileSize) {
     end = start + bytesPerPiece
-    if (end > filesize) {
-      end = filesize
+    if (end > fileSize) {
+      end = fileSize
     }
 
     var chunk = file.slice(start, end) // 切割文件
-    var md5Chunk = 'md5_12345'
-    // var formData = new FormData(); // inportant
-    // formData.append("file", chunk, filename);
-    // console.log('## 分片规则如下：共有 ' + totalPieces + '片，第', ( index + 1 ), ' 片，从', start, '开始，到 ', end, '结束, 大小为 ', chunk, ', md5 的值为', md5Chunk)
-    promiseArr.push(SplitUploadRequestOne(upload, start + '-' + (end - 1), index, totalPieces, chunk, md5Chunk))
+    console.log('## 分片规则如下：共有 ' + totalPieces + '片，第', (index + 1), ' 片，从', start, '开始，到 ', end, '结束, 大小为 ', chunk)
+    promiseArr.push(SplitUploadRequestOne(upload, start + '-' + (end - 1), index, totalPieces, chunk))
     start = end
     index++
   }
   return new Promise(function (resolve, reject) {
-    console.log('### on no !!!')
     upload.uploadingStatus.startUploadingTime = new Date().getTime() // 初始化开始上传时间
     Promise.all(promiseArr)
       .then(function (result) {
@@ -295,7 +294,7 @@ function SplitUploadRequetAll (upload) {
 
 // 调用分片上传接口
 // 计算本次上传的累计上传大小数据和剩余传输时间数据
-function SplitUploadRequestOne (upload, range, tag, totalPieces, chunk, chunkMd5) {
+function SplitUploadRequestOne (upload, range, tag, totalPieces, chunk) {
   return new Promise(function (resolve, reject) {
     // var formData = new FormData(); // inportant
     // formData.append("file", chunk, filename);
@@ -303,7 +302,7 @@ function SplitUploadRequestOne (upload, range, tag, totalPieces, chunk, chunkMd5
     setTimeout(function () {
       if (tryByRandom(100)) {
         var fileMeta = upload.fileMeta
-        var filesize = fileMeta.fileSize
+        var fileSize = fileMeta.fileSize
         var filename = fileMeta.filename
         var id = fileMeta.file_id
 
@@ -318,14 +317,14 @@ function SplitUploadRequestOne (upload, range, tag, totalPieces, chunk, chunkMd5
           upload.uploadingStatus.hadArrived = true
         }
 
-        remainTime = parseInt((filesize - upload.uploadingStatus.hadUpload) / upload.uploadingStatus.estimatespeed)
+        remainTime = parseInt((fileSize - upload.uploadingStatus.hadUpload) / upload.uploadingStatus.estimatespeed)
 
         // console.log('##第 ' +  ( tag + 1 ) + '片返回了，当前分片大小',  chunk.size, ' , 带宽为 ', upload.uploadingStatus.estimatespeed , '剩余上传时间 ', remaining)
-        // console.log('##当前时间', nowtime, ' , 剩余体积 ', ( filesize - upload.uploadingStatus.hadUpload ))
+        // console.log('##当前时间', nowtime, ' , 剩余体积 ', ( fileSize - upload.uploadingStatus.hadUpload ))
 
         upload.trigger('uploading', {
           filename: filename,
-          size: filesize,
+          size: fileSize,
           id: id,
           progress: (tag + 1) / totalPieces,
           uploaded: upload.uploadingStatus.hadUpload,
@@ -335,7 +334,7 @@ function SplitUploadRequestOne (upload, range, tag, totalPieces, chunk, chunkMd5
       } else {
         reject({
           code: 'A00001',
-          msg: '奇传分片上传接口请求异常：第' + tag + '片视频上传失败'
+          msg: '分片上传接口请求异常：第' + tag + '片视频上传失败'
         })
       }
     }, (tag + 1) * 2000)
@@ -368,3 +367,5 @@ function getFileTypeByName (filename) {
     return ''
   }
 }
+
+export default VideoUpload

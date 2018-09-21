@@ -16,14 +16,13 @@ export default {
     }
   },
   mounted () {
-    console.log(VideoUpload)
     var input = document.getElementById('videofile')
     var upload = null
 
     input.addEventListener('change', function () {
       var blob = this.files[0]
       upload = new VideoUpload(blob, {
-        mode: 1
+        mode: [1]
       })
 
       upload.on('ready', function (msg) {
