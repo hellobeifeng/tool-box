@@ -146,37 +146,37 @@ code 枚举值如下
 
 - router
 
-    .post('/adfe/avm/splitUpload', middleware('videoUpload'), handlers('splitUpload'))
+      .post('/adfe/avm/splitUpload', middleware('videoUpload'), handlers('splitUpload'))
 
 - middle/videoUpload
 
-    var multipart = require('connect-multiparty');
-    var multipartMiddleware = multipart();
+      var multipart = require('connect-multiparty');
+      var multipartMiddleware = multipart();
 
-    module.exports = multipartMiddleware
+      module.exports = multipartMiddleware
 
 - handlers/splitUpload
 
-    const fs = require('fs')
-    const FormData = require('form-data')
-    const path = require('path')
+      const fs = require('fs')
+      const FormData = require('form-data')
+      const path = require('path')
 
-    let params = new FormData()
-    params.append('file', fs.createReadStream((path.resolve(req.files.files.path))))
-    params.append('file_id', req.body.file_id)
-    params.append('range', req.body.range)
+      let params = new FormData()
+      params.append('file', fs.createReadStream((path.resolve(req.files.files.path))))
+      params.append('file_id', req.body.file_id)
+      params.append('range', req.body.range)
 
-    params.submit(url, function (err, res) {
-      if (err) {
-        log.info('splitUpload params submit url error', err)
-        res.status(500).send('splitUpload params submit url error')
-      }
-      let body = ''
-      res.on('data', chunk => {
-        body += chunk
-      }).on('end', () => {
-        // 业务逻辑
-      })
+      params.submit(url, function (err, res) {
+        if (err) {
+          log.info('splitUpload params submit url error', err)
+          res.status(500).send('splitUpload params submit url error')
+        }
+        let body = ''
+        res.on('data', chunk => {
+          body += chunk
+        }).on('end', () => {
+          // 业务逻辑
+        })
 
 ## 四、TODO
 - 使用各类设计模式改造代码：单例、工厂、策略、装饰器等
