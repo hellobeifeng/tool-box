@@ -16,11 +16,17 @@
     <json-diff></json-diff>
     <hr>
   </div>
+  <div>
+    <span>4.ele 升级版下拉菜单</span>
+      <ele-multi-selection></ele-multi-selection>
+    <hr>
+  </div>
 </div>
 </template>
 <script>
 import VideoUpload from 'comp/VideoUploader/index.vue'
 import JsonDiff from 'comp/JsonDiff/index.vue'
+import EleMultiSelection from 'comp/EleMultiSelection/index.vue'
 export default {
   methods: {
     call_notify () {
@@ -32,7 +38,8 @@ export default {
   },
   components: {
     VideoUpload,
-    JsonDiff
+    JsonDiff,
+    EleMultiSelection
   }
 }
 </script>
