@@ -1,31 +1,40 @@
 <template>
   <div>
-    <p>父组件属性 {{value5}}</p>
-    <ele-mult-selection @lala=setSelectResulot :options=options></ele-mult-selection>
+    <p>父组件属性 {{optionsSelectValue}}</p>
+    <ele-mult-selection @changeValue=setSelectResult :options=optionsCopy></ele-mult-selection>
   </div>
 </template>
 <script>
 import EleMultSelection from './EleMultSelection.vue'
+let formData = {
+  options: [
+    { value: 'ALL_SELECT', label: 'ALL' },
+    { value: '1', label: 'liablePerson1' },
+    { value: '2', label: 'liablePerson2' },
+    { value: '3', label: 'liablePerson3' },
+    { value: '4', label: 'liablePerson4' },
+    { value: '5', label: 'liablePerson5' }
+  ],
+  optionsSelectValue: []
+}
 export default {
   data () {
     return {
-      options: [
-        { value: 'ALL_SELECT', label: 'ALL' },
-        { value: '1', label: 'liablePerson1' },
-        { value: '2', label: 'liablePerson2' },
-        { value: '3', label: 'liablePerson3' },
-        { value: '4', label: 'liablePerson4' },
-        { value: '5', label: 'liablePerson5' }
-      ],
-      value5: []
+      optionsCopy: [],
+      optionsSelectValue: []
     }
+  },
+  mounted () {
+    var optionsCopy = JSON.parse(JSON.stringify(formData.options)) // 克隆一份表单对象数据
+    this.optionsCopy = optionsCopy
   },
   components: {
     EleMultSelection
   },
   methods: {
-    setSelectResulot (val) {
-      this.value5 = val
+    setSelectResult (val) {
+      this.optionsSelectValue = val
+      formData.optionsSelectValue = val
     }
   }
 }

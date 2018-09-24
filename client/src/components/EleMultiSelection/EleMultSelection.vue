@@ -48,7 +48,7 @@ export default {
       // 储存当前最后的结果 作为下次的老数据
       this.oldOptions[0] = this.choosePerson
       console.log('##end this.oldOptions[0] ', this.oldOptions[0])
-      this.$emit('lala', this.choosePerson)
+      this.$emit('changeValue', this.choosePerson)
     }
   }
 }
