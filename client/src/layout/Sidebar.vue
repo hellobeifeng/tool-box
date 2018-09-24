@@ -44,6 +44,16 @@
             name: 'Vue Api',
             link: '/vue/api'
           }]
+        }, {
+          index: '3',
+          name: 'JS 相关',
+          link: '/js/demos',
+          icon: 'el-icon-edit-outline',
+          subs: [{
+            index: '3-1',
+            name: 'js 有趣demo',
+            link: '/js/demos'
+          }]
         }]
       }
     },

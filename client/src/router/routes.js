@@ -3,6 +3,7 @@ import Home from '../layout/Home.vue'
 import Readme from '../layout/MainPage.vue'
 import ComponentsList from '../views/aboutVue/componentsList.vue'
 import ApiList from '../views/aboutVue/apiList.vue'
+import JsUsefulDemos from '../views/aboutJs/js-useful-demos.vue'
 
 export default [
   {
@@ -41,6 +42,23 @@ export default [
       {
         path: 'api',
         component: ApiList
+      }
+    ]
+  },
+  {
+    path: '/js',
+    component: Home,
+    redirect: 'noredirect',
+    name: 'js 相关',
+    noDropdown: true,
+    children: [
+      {
+        path: 'demos',
+        component: JsUsefulDemos
+      },
+      {
+        path: 'util-functions',
+        component: JsUsefulDemos
       }
     ]
   }

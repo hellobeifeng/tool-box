@@ -21,12 +21,19 @@
       <ele-multi-selection></ele-multi-selection>
     <hr>
   </div>
+  <div>
+    <span>5.ele 升级版表格</span>
+      <ele-can-search-table></ele-can-search-table>
+    <hr>
+  </div>
 </div>
 </template>
 <script>
 import VideoUpload from 'comp/VideoUploader/index.vue'
 import JsonDiff from 'comp/JsonDiff/index.vue'
 import EleMultiSelection from 'comp/EleMultiSelection/index.vue'
+import EleCanSearchTable from 'comp/EleCanSearchTable/index.vue'
+
 export default {
   methods: {
     call_notify () {
@@ -39,13 +46,15 @@ export default {
   components: {
     VideoUpload,
     JsonDiff,
-    EleMultiSelection
+    EleMultiSelection,
+    EleCanSearchTable
   }
 }
 </script>
 <style lang="stylus">
   .acontainer {
-    padding-left: 20px
+    padding-left: 20px;
+    padding-bottom: 50px;
   }
 </style>
 
