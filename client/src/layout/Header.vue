@@ -1,14 +1,14 @@
 <template>
   <div class="">
     <el-menu class="navbar" mode="horizontal" :isActive="!sidebar.opened">
-      <i class="fa fa-bars" @click="toggleSideBar" :isActive="sidebar.opened"></i>
+      <i class="fa fa-bars" @click="changeSideBarStatus" :isActive="sidebar.opened"></i>
     </el-menu>
   </div>
 </template>
 
 <script>
   import $ from 'jquery'
-  import { mapGetters } from 'vuex'
+  import { mapState, mapActions } from 'vuex'
 
   export default {
     data () {
@@ -17,14 +17,17 @@
       }
     },
     computed: {
-      ...mapGetters([
-        'sidebar'
-      ])
+      ...mapState({
+        sidebar: state => state.app.sidebar
+      })
     },
     methods: {
-      toggleSideBar () {
+      ...mapActions({
+        toggleSideBar: 'toggleSideBar'
+      }),
+      changeSideBarStatus () {
         $(this).toggleClass('is-active')
-        this.$store.dispatch('ToggleSideBar')
+        this.toggleSideBar()
       }
     },
     components: {

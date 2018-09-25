@@ -14,6 +14,7 @@
   import vHead from './Header.vue'
   import vSidebar from './Sidebar.vue'
   import appMain from './AppMain.vue'
+  import { mapState } from 'vuex'
   export default {
     data () {
       return {
@@ -24,9 +25,9 @@
       vHead, vSidebar, appMain
     },
     computed: {
-      sidebar () {
-        return this.$store.state.sidebar
-      }
+      ...mapState({
+        sidebar: state => state.app.sidebar
+      })
     }
   }
 </script>

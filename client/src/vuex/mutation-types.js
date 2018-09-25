@@ -1,0 +1,4 @@
+export const CONFIRM = 'CONFIRM'
+export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR'
+export const START_LOADING = 'START_LOADING'
+export const END_LOADING = 'END_LOADING'
