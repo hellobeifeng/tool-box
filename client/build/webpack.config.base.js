@@ -11,7 +11,9 @@ const config = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       '@': path.join(__dirname, '../src'),
-      'comp': path.join(__dirname, '../src/components')
+      'comp': path.join(__dirname, '../src/components'),
+      'compJS': path.join(__dirname, '../src/componentsJS'),
+      'utils': path.join(__dirname, '../src/util')
     }
   },
   module: {

@@ -26,6 +26,11 @@
       <ele-can-search-table></ele-can-search-table>
     <hr>
   </div>
+  <div>
+    <span>6. 通用提示窗</span>
+    <alert-component></alert-component>
+    <hr>
+  </div>
 </div>
 </template>
 <script>
@@ -33,6 +38,7 @@ import VideoUpload from 'comp/VideoUploader/index.vue'
 import JsonDiff from 'comp/JsonDiff/index.vue'
 import EleMultiSelection from 'comp/EleMultiSelection/index.vue'
 import EleCanSearchTable from 'comp/EleCanSearchTable/index.vue'
+import AlertComponent from 'comp/AlertComponent/index.vue'
 
 export default {
   methods: {
@@ -47,7 +53,8 @@ export default {
     VideoUpload,
     JsonDiff,
     EleMultiSelection,
-    EleCanSearchTable
+    EleCanSearchTable,
+    AlertComponent
   }
 }
 </script>
