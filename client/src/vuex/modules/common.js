@@ -1,5 +1,7 @@
 import {
-  CONFIRM
+  CONFIRM,
+  ALERT,
+  CLOSE_ALERT
 } from '../mutation-types'
 
 const state = {
@@ -15,9 +17,16 @@ const state = {
 }
 
 const mutations = {
+  [ALERT] (state, info) {
+    state.alert.isComfirm = false
+    generateNewAlert(state, info.msg, info.callback)
+  },
   [CONFIRM] (state, info) {
     state.alert.isComfirm = true
     generateNewAlert(state, info.msg, info.callback)
+  },
+  [CLOSE_ALERT] (state) {
+    state.alert.show = false
   }
 }
 
