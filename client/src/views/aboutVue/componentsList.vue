@@ -31,6 +31,11 @@
     <alert-component></alert-component>
     <hr>
   </div>
+  <div>
+    <span>7. 拖拽排序</span>
+    <drag-component></drag-component>
+    <hr>
+  </div>
 </div>
 </template>
 <script>
@@ -39,6 +44,7 @@ import JsonDiff from 'comp/JsonDiff/index.vue'
 import EleMultiSelection from 'comp/EleMultiSelection/index.vue'
 import EleCanSearchTable from 'comp/EleCanSearchTable/index.vue'
 import AlertComponent from 'comp/AlertComponent/index.vue'
+import DragComponent from 'comp/DragComponent/index.vue'
 
 export default {
   methods: {
@@ -54,7 +60,8 @@ export default {
     JsonDiff,
     EleMultiSelection,
     EleCanSearchTable,
-    AlertComponent
+    AlertComponent,
+    DragComponent
   }
 }
 </script>
